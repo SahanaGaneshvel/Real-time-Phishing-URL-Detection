@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Phishing URL Detection</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Google Fonts: Open Sans -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="bg-softwhite">
+    <!-- Header Banner -->
+    <header class="ppt-header-banner position-relative">
+        <div class="ppt-header-bg"></div>
+        <div class="container text-center py-5">
+            <h1 class="ppt-title mb-2 animate-fadein">Real-time Phishing URL Detection</h1>
+            <h2 class="ppt-subtitle mb-0 animate-fadein" style="animation-delay:0.3s">Using Machine Learning</h2>
+        </div>
+    </header>
+
+    <main class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-7 col-md-10 col-12">
+                <!-- URL Input -->
+                <div class="ppt-card mb-4">
+                    <form id="urlForm" autocomplete="off" class="p-4">
+                        <label for="urlInput" class="form-label ppt-label">Enter URL to Analyze</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control ppt-input" id="urlInput" placeholder="e.g. https://example.com" required>
+                            <button class="btn ppt-btn-primary animate-pulse" type="submit" id="analyzeBtn">
+                                <span id="analyzeBtnText">Analyze</span>
+                                <span id="analyzeSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Result Card -->
+                <div id="resultCard" class="ppt-card mb-4 d-none animate-slideup">
+                    <div class="p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <span id="resultBadge" class="ppt-badge me-3"></span>
+                            <div>
+                                <h5 id="resultLabel" class="ppt-result-title mb-0"></h5>
+                                <div id="confidenceScore" class="ppt-confidence-text"></div>
+                            </div>
+                        </div>
+                        <!-- Confidence Meter -->
+                        <div class="ppt-confidence-bar-wrap mb-3">
+                            <div id="confidenceBar" class="ppt-confidence-bar"></div>
+                            <span id="confidencePercent" class="ppt-confidence-percent"></span>
+                        </div>
+                        <!-- Expandable Explainable AI Panel -->
+                        <div class="ppt-explain-panel mb-2">
+                            <button class="btn btn-link ppt-explain-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#explainCollapse" aria-expanded="false" aria-controls="explainCollapse">
+                                <i class="bi bi-lightbulb me-2"></i>Show Reason
+                            </button>
+                            <div class="collapse" id="explainCollapse">
+                                <div id="explainableAIContent" class="ppt-explain-content"></div>
+                            </div>
+                        </div>
+                        <!-- Quick Report Button -->
+                        <div class="text-end mt-3">
+                            <button id="reportBtn" class="btn ppt-btn-report"><i class="bi bi-flag me-1"></i>Report</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phishing Tips Carousel -->
+                <div id="tipsCarouselCard" class="ppt-card mb-4 d-none animate-slidein">
+                    <div class="p-3">
+                        <div id="tipsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+                            <div class="carousel-inner" id="tipsCarouselInner"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Phishing Feed -->
+                <div id="threatFeedPanel" class="ppt-card mb-4 animate-scrollin">
+                    <div class="p-3">
+                        <h6 class="ppt-feed-title mb-3"><i class="bi bi-broadcast me-2"></i>Live Phishing Feed</h6>
+                        <ul id="threatFeedList" class="ppt-feed-list mb-0"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Feedback Modal -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content ppt-modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="feedbackModalLabel"><i class="bi bi-flag me-2"></i>Report Feedback</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="feedbackForm">
+                        <div class="mb-3">
+                            <label for="feedbackName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="feedbackName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="feedbackEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="feedbackEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="feedbackText" class="form-label">Feedback</label>
+                            <textarea class="form-control" id="feedbackText" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn ppt-btn-report">Submit</button>
+                    </form>
+                    <div id="feedbackSuccess" class="alert alert-success mt-3 d-none" role="alert">
+                        Thank you for your feedback!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
