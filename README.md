@@ -112,20 +112,7 @@ The system evaluates URLs using features like:
 └── utils/                         # Utility functions
 ```
 
-## 🧪 Optional: Training
 
-Training utilities are provided to build or update models:
-```bash
-python train_real_model.py
-```
-Artifacts are saved under `model/` with accompanying reports.
-
-## 📄 License
-
-MIT License
-
-## 🙋 Support
-
-Open an issue in the repository for questions or support.
+ 
 
 
