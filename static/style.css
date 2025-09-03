@@ -1,0 +1,479 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Open Sans', Arial, sans-serif;
+    background: #F5F5F5;
+    color: #333333;
+}
+.bg-softwhite { background: #F5F5F5; }
+
+/* Header Banner */
+.ppt-header-banner {
+    background: #0D1B2A;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    min-height: 180px;
+}
+.ppt-header-bg {
+    position: absolute;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background: url('data:image/svg+xml;utf8,<svg width="100%25" height="100%25" viewBox="0 0 1200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="200" fill="%230D1B2A"/><g opacity="0.08"><circle cx="200" cy="100" r="80" stroke="%232E8B57" stroke-width="8"/><rect x="600" y="40" width="120" height="120" rx="24" stroke="%23B22222" stroke-width="8"/><polygon points="1000,40 1100,160 900,160" stroke="%232E8B57" stroke-width="8" fill="none"/><rect x="300" y="60" width="160" height="80" rx="40" stroke="%23B22222" stroke-width="8"/></g></svg>') no-repeat center/cover;
+    z-index: 0;
+}
+.ppt-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #fff;
+    z-index: 1;
+    position: relative;
+}
+.ppt-subtitle {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2E8B57;
+    z-index: 1;
+    position: relative;
+}
+
+/* Animation Classes */
+.animate-fadein {
+    opacity: 0;
+    animation: fadein 1.2s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes fadein {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: none; }
+}
+.animate-slideup {
+    opacity: 0;
+    animation: slideup 0.8s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes slideup {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: none; }
+}
+.animate-slidein {
+    opacity: 0;
+    animation: slidein 0.8s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes slidein {
+    from { opacity: 0; transform: translateX(-40px); }
+    to { opacity: 1; transform: none; }
+}
+.animate-scrollin {
+    opacity: 0;
+    animation: scrollin 1s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes scrollin {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: none; }
+}
+.animate-footerfade {
+    opacity: 0;
+    animation: footerfade 1.2s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes footerfade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Card & Input */
+.ppt-card {
+    background: #fff;
+    border-radius: 1.1rem;
+    box-shadow: 0 2px 16px #0d1b2a11;
+    border: none;
+}
+.ppt-label {
+    font-weight: 600;
+    color: #0D1B2A;
+    font-size: 1.08rem;
+}
+.ppt-input {
+    border-radius: 0.5rem 0 0 0.5rem;
+    font-size: 1.1rem;
+    background: #F5F5F5;
+    border: 1.5px solid #0D1B2A;
+    color: #333;
+}
+.ppt-input:focus {
+    box-shadow: 0 0 0 2px #2E8B5733;
+    border-color: #2E8B57;
+}
+.ppt-btn-primary {
+    border-radius: 0 0.5rem 0.5rem 0;
+    background: #0D1B2A;
+    border: none;
+    font-weight: 600;
+    color: #fff;
+    transition: background 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+.ppt-btn-primary:hover, .ppt-btn-primary:focus {
+    background: #2E8B57;
+    box-shadow: 0 0 0 2px #2E8B5733;
+}
+.animate-pulse {
+    animation: pulse 2.2s infinite;
+}
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 #0D1B2A33; }
+    70% { box-shadow: 0 0 0 8px #0D1B2A00; }
+    100% { box-shadow: 0 0 0 0 #0D1B2A00; }
+}
+.ppt-btn-primary:active::after {
+    content: '';
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 120%; height: 120%;
+    background: #2E8B5733;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripple 0.5s linear;
+    z-index: 1;
+}
+@keyframes ripple {
+    to { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
+
+/* Result Card & Badge */
+.ppt-badge {
+    display: inline-block;
+    padding: 0.5rem 1.1rem;
+    border-radius: 2rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    background: #F5F5F5;
+    color: #0D1B2A;
+    box-shadow: 0 1px 6px #0d1b2a11;
+}
+.ppt-badge-safe {
+    background: #2E8B57;
+    color: #fff;
+}
+.ppt-badge-phishing {
+    background: #B22222;
+    color: #fff;
+}
+.ppt-result-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0D1B2A;
+}
+.ppt-confidence-text {
+    font-size: 1.05rem;
+    color: #333;
+}
+
+/* Confidence Meter */
+.ppt-confidence-bar-wrap {
+    position: relative;
+    height: 22px;
+    background: #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+}
+.ppt-confidence-bar {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0%;
+    background: linear-gradient(90deg, #2E8B57 0%, #facc15 50%, #B22222 100%);
+    border-radius: 12px;
+    transition: width 1.2s cubic-bezier(.4,0,.2,1);
+    height: 100%;
+}
+.ppt-confidence-percent {
+    position: absolute;
+    right: 18px; top: 0; bottom: 0;
+    display: flex; align-items: center;
+    font-weight: 700;
+    color: #0D1B2A;
+    font-size: 1.08rem;
+    z-index: 2;
+}
+
+/* Explainable AI Panel */
+.ppt-explain-panel {
+    margin-top: 0.5rem;
+}
+.ppt-explain-toggle {
+    color: #0D1B2A;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.ppt-explain-toggle:hover {
+    color: #2E8B57;
+}
+.ppt-explain-content {
+    background: #F5F5F5;
+    color: #333;
+    border-radius: 0.5rem;
+    padding: 0.7rem 1rem;
+    font-size: 1.01rem;
+    box-shadow: 0 1px 6px #0d1b2a11;
+    margin-top: 0.5rem;
+    animation: expandPanel 0.5s cubic-bezier(.4,0,.2,1);
+}
+@keyframes expandPanel {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: none; }
+}
+
+/* Tips Carousel */
+#tipsCarouselCard {
+    background: #fff;
+    border-left: 4px solid #2E8B57;
+    border-radius: 0.7rem;
+    animation: slidein 0.8s cubic-bezier(.4,0,.2,1);
+}
+#tipsCarouselInner .carousel-item {
+    text-align: center;
+    font-size: 1.08rem;
+    padding: 0.7rem 0.5rem;
+    color: #0D1B2A;
+}
+#tipsCarouselInner .carousel-item .bi {
+    color: #2E8B57;
+    margin-right: 0.5rem;
+}
+
+/* Threat Feed */
+#threatFeedPanel {
+    background: #fff;
+    border-radius: 1.1rem;
+    box-shadow: 0 2px 16px #0d1b2a11;
+    border: none;
+}
+.ppt-feed-title {
+    color: #B22222;
+    font-weight: 700;
+}
+.ppt-feed-list li {
+    padding: 0.4rem 0.2rem;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 0.97rem;
+    color: #B22222;
+    font-family: 'Open Sans', monospace;
+    word-break: break-all;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.ppt-feed-list li:last-child { border-bottom: none; }
+
+/* Report Button & Modal */
+.ppt-btn-report {
+    background: #B22222;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 2rem;
+    box-shadow: 0 1px 6px #B2222211;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.ppt-btn-report:hover, .ppt-btn-report:focus {
+    background: #0D1B2A;
+    box-shadow: 0 0 0 2px #0D1B2A33;
+}
+.ppt-modal-content {
+    background: #fff;
+    color: #333;
+    border-radius: 1rem;
+}
+
+/* Footer */
+.ppt-footer {
+    background: #0D1B2A;
+    color: #fff;
+    font-size: 1.01rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 -2px 16px #0d1b2a11;
+}
+.ppt-footer-text {
+    color: #fff;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 991px) {
+    #threatFeedPanel {
+        margin-top: 2rem;
+    }
+    .ppt-title {
+        font-size: 2rem;
+    }
+    .ppt-subtitle {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .ppt-header-banner {
+        min-height: 140px;
+        padding: 2rem 0;
+    }
+    .ppt-title {
+        font-size: 1.8rem;
+        letter-spacing: 0.5px;
+    }
+    .ppt-subtitle {
+        font-size: 1rem;
+    }
+    .ppt-card {
+        margin-bottom: 1rem;
+        border-radius: 0.8rem;
+    }
+    .ppt-label {
+        font-size: 1rem;
+    }
+    .ppt-input {
+        font-size: 1rem;
+        border-radius: 0.5rem 0 0 0.5rem;
+    }
+    .ppt-btn-primary {
+        border-radius: 0 0.5rem 0.5rem 0;
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+    }
+    .ppt-badge {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+    .ppt-result-title {
+        font-size: 1.1rem;
+    }
+    .ppt-confidence-text {
+        font-size: 0.95rem;
+    }
+    .ppt-confidence-bar-wrap {
+        height: 18px;
+    }
+    .ppt-confidence-percent {
+        font-size: 0.9rem;
+        right: 12px;
+    }
+    .ppt-explain-content {
+        font-size: 0.95rem;
+        padding: 0.5rem 0.8rem;
+    }
+    #tipsCarouselInner .carousel-item {
+        font-size: 0.95rem;
+        padding: 0.5rem 0.3rem;
+    }
+    .ppt-feed-title {
+        font-size: 1rem;
+    }
+    .ppt-feed-list li {
+        font-size: 0.85rem;
+        padding: 0.3rem 0.1rem;
+    }
+    .ppt-btn-report {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+    #threatFeedPanel {
+        margin-top: 1.5rem;
+    }
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .ppt-title {
+        font-size: 1.5rem;
+    }
+    .ppt-subtitle {
+        font-size: 0.9rem;
+    }
+    .ppt-header-banner {
+        min-height: 120px;
+        padding: 1.5rem 0;
+    }
+    .ppt-card {
+        padding: 0.8rem;
+        margin-bottom: 0.8rem;
+    }
+    .ppt-input {
+        font-size: 0.95rem;
+    }
+    .ppt-btn-primary {
+        font-size: 0.95rem;
+        padding: 0.4rem 0.8rem;
+    }
+    .ppt-badge {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+    }
+    .ppt-result-title {
+        font-size: 1rem;
+    }
+    .ppt-confidence-text {
+        font-size: 0.9rem;
+    }
+    .ppt-confidence-bar-wrap {
+        height: 16px;
+    }
+    .ppt-confidence-percent {
+        font-size: 0.8rem;
+        right: 8px;
+    }
+    .ppt-explain-content {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.6rem;
+    }
+    #tipsCarouselInner .carousel-item {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.2rem;
+    }
+    .ppt-feed-list li {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.1rem;
+    }
+    .ppt-btn-report {
+        font-size: 0.85rem;
+        padding: 0.3rem 0.6rem;
+    }
+    .container {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    /* Stack input and button on very small screens */
+    .input-group {
+        flex-direction: column;
+    }
+    .input-group .form-control {
+        border-radius: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .input-group .btn {
+        border-radius: 0.5rem;
+        width: 100%;
+    }
+}
+
+/* Touch-friendly improvements */
+@media (max-width: 768px) {
+    .btn {
+        min-height: 44px; /* Touch target minimum */
+    }
+    .ppt-explain-toggle {
+        padding: 0.5rem 0;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+    .modal-dialog {
+        margin: 1rem;
+        max-width: calc(100% - 2rem);
+    }
+} 
