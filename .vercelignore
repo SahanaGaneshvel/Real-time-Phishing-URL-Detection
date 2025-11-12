@@ -1,13 +1,15 @@
-# Python
+# Python - Virtual environments (CRITICAL: These are huge and must be excluded)
+venv/
+env/
+ENV/
+.venv/
+**/venv/
+**/.venv/
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-venv/
-env/
-ENV/
-.venv
 
 # IDE
 .vscode/
@@ -24,6 +26,7 @@ htmlcov/
 frontend/node_modules/
 frontend/build/
 frontend/.next/
+**/node_modules/
 
 # Database files (if not needed in production)
 *.db
@@ -50,4 +53,20 @@ start.py
 start.sh
 .env.local
 .env.development
+
+# Large data files and vectorstores (will be regenerated at runtime if needed)
+phishing_knowledge_db/
+*.faiss
+
+# Feedback database (should be created at runtime)
+feedback_data.db
+
+# Large model files (exclude non-essential ones, keep .pkl files as they're small)
+model/*.joblib
+model/*.pth
+model/*.h5
+model/*.onnx
+model/*.sav
+model/*.tmp
+model/*.bak
 

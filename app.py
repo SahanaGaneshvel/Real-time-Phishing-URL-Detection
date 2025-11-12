@@ -37,6 +37,47 @@ else:
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
+# Maximum response size in bytes (10MB - well below Node.js Buffer limit of ~4GB)
+# This prevents the ERR_OUT_OF_RANGE error when Vercel tries to buffer responses
+MAX_RESPONSE_SIZE = 10 * 1024 * 1024  # 10MB
+
+# Add middleware to check response sizes
+@app.after_request
+def check_response_size(response):
+    """Check if response size exceeds maximum allowed size"""
+    try:
+        # Get response data size
+        if hasattr(response, 'data') and response.data:
+            # Handle both bytes and string data
+            if isinstance(response.data, bytes):
+                response_size = len(response.data)
+            elif isinstance(response.data, str):
+                response_size = len(response.data.encode('utf-8'))
+            else:
+                # If it's a generator or other type, try to get length
+                try:
+                    data_str = str(response.data)
+                    response_size = len(data_str.encode('utf-8'))
+                except:
+                    response_size = 0
+            
+            if response_size > MAX_RESPONSE_SIZE:
+                logger.error(f"Response size {response_size} exceeds maximum {MAX_RESPONSE_SIZE}")
+                # Return error response instead of oversized one
+                from flask import make_response
+                error_response = make_response(jsonify({
+                    'success': False,
+                    'error': 'Response too large',
+                    'message': 'The response exceeds the maximum allowed size. Please try a more specific query.',
+                    'response_size': response_size,
+                    'max_size': MAX_RESPONSE_SIZE
+                }), 413)  # 413 Payload Too Large
+                error_response.headers['Content-Type'] = 'application/json'
+                return error_response
+    except Exception as e:
+        logger.error(f"Error checking response size: {e}")
+    return response
+
 # Get GEMINI_API_KEY from environment
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
 
@@ -245,7 +286,12 @@ def generate_response_with_rag(question):
     try:
         # Retrieve relevant documents for context
         docs = vectorstore.similarity_search(question, k=3)
-        context = "\n\n".join([doc.page_content for doc in docs])
+        # Limit context size to prevent oversized responses (max 5000 chars per doc)
+        context_parts = []
+        for doc in docs:
+            content = doc.page_content[:5000]  # Limit each document to 5000 chars
+            context_parts.append(content)
+        context = "\n\n".join(context_parts)
         logger.debug("📚 Retrieved %d context documents", len(docs))
 
         prompt = f"""You are a friendly cybersecurity coach helping someone understand phishing risks.
@@ -266,6 +312,11 @@ Guidelines for your reply:
         if gemini_model:
             gemini_text = generate_with_gemini(prompt)
             if gemini_text:
+                # Limit response size to prevent oversized responses (max 50KB text)
+                max_response_chars = 50 * 1024  # 50KB
+                if len(gemini_text) > max_response_chars:
+                    logger.warning(f"Response truncated from {len(gemini_text)} to {max_response_chars} chars")
+                    gemini_text = gemini_text[:max_response_chars] + "\n\n[Response truncated due to size limits]"
                 logger.info("✅ Gemini response received (first 100 chars: %s...)", gemini_text[:100])
                 return gemini_text
             logger.warning("⚠️ Gemini returned no content. Falling back to contextual response.")
@@ -273,6 +324,10 @@ Guidelines for your reply:
             logger.warning("⚠️ Gemini model unavailable; falling back to contextual response.")
 
         if context.strip():
+            # Limit fallback response size (max 50KB)
+            max_context_chars = 40 * 1024  # 40KB for context in fallback
+            if len(context) > max_context_chars:
+                context = context[:max_context_chars] + "\n\n[Context truncated due to size limits]"
             fallback_response = (
                 "⚠️ Gemini service is unavailable right now, so here's a quick summary from our knowledge base:\n\n"
                 "Summary: Phishing attacks try to trick you into sharing sensitive details. Double-check sender info and "
@@ -341,6 +396,14 @@ def test_gemini():
                 "status": "model_unavailable"
             }), 503
         
+        # Limit prompt length to prevent abuse
+        if len(prompt) > 10000:  # 10KB max prompt
+            return jsonify({
+                "success": False,
+                "error": "Prompt too long. Maximum 10,000 characters allowed.",
+                "status": "error"
+            }), 400
+        
         # Generate response using Gemini
         response_text = generate_with_gemini(prompt)
         
@@ -352,14 +415,33 @@ def test_gemini():
                 "model": gemini_model_name
             }), 502
         
-        return jsonify({
+        # Limit response text size
+        max_response_chars = 50 * 1024  # 50KB
+        if len(response_text) > max_response_chars:
+            logger.warning(f"Test response truncated from {len(response_text)} to {max_response_chars} chars")
+            response_text = response_text[:max_response_chars] + "\n\n[Response truncated due to size limits]"
+        
+        result = {
             "success": True,
             "message": "Gemini API test successful",
             "model": gemini_model_name,
-            "prompt": prompt,
+            "prompt": prompt[:1000] if len(prompt) > 1000 else prompt,  # Truncate prompt in response
             "response": response_text,
             "status": "working"
-        })
+        }
+        
+        # Check JSON size before returning
+        import json as json_lib
+        json_str = json_lib.dumps(result)
+        if len(json_str.encode('utf-8')) > MAX_RESPONSE_SIZE:
+            logger.error(f"Test JSON response size {len(json_str)} exceeds maximum")
+            return jsonify({
+                "success": False,
+                "error": "Response too large",
+                "status": "error"
+            }), 413
+        
+        return jsonify(result)
         
     except Exception as e:
         logger.error(f"❌ Gemini API test failed: {str(e)}")
@@ -414,18 +496,42 @@ def api_generate_response_with_rag():
                 "error": "Question cannot be empty"
             }), 400
         
+        # Limit question length to prevent abuse
+        if len(question) > 10000:  # 10KB max question
+            return jsonify({
+                "success": False,
+                "error": "Question too long. Maximum 10,000 characters allowed."
+            }), 400
+        
         logger.info(f"🔍 Processing RAG query: {question}")
         
         # Generate response using RAG
         response = generate_response_with_rag(question)
         
-        return jsonify({
+        # Ensure response text is not too large before JSON serialization
+        if isinstance(response, str) and len(response) > 50 * 1024:  # 50KB
+            response = response[:50 * 1024] + "\n\n[Response truncated due to size limits]"
+        
+        result = {
             "success": True,
             "question": question,
             "response": response,
             "vectorstore_loaded": vectorstore is not None,
             "gemini_configured": gemini_model is not None
-        })
+        }
+        
+        # Check JSON size before returning
+        import json as json_lib
+        json_str = json_lib.dumps(result)
+        if len(json_str.encode('utf-8')) > MAX_RESPONSE_SIZE:
+            logger.error(f"JSON response size {len(json_str)} exceeds maximum")
+            return jsonify({
+                "success": False,
+                "error": "Response too large",
+                "message": "The generated response is too large. Please try a more specific query."
+            }), 413
+        
+        return jsonify(result)
         
     except Exception as e:
         logger.error(f"❌ Error generating RAG response: {str(e)}")
