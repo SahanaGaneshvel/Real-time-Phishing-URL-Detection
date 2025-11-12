@@ -324,10 +324,7 @@ curl -X POST http://localhost:5002/api/chat -H "Content-Type: application/json" 
 - **LangChain** for RAG implementation
 - **React** and **Tailwind CSS** for the frontend framework
 
-## 📞 Support
-
-For support, please open an issue in the GitHub repository or contact the development team.
-
+ 
 ## 🔮 Future Enhancements
 
 - [ ] Multi-language support
