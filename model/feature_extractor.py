@@ -2,7 +2,6 @@ import re
 import tldextract
 import requests
 from urllib.parse import urlparse, parse_qs
-import numpy as np
 from collections import Counter
 import math
 import socket
