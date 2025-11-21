@@ -28,3 +28,6 @@ google-generativeai==0.8.2
 
 # Optional: SHAP for model explanations (optional dependency)
 # shap>=0.44.0
+
+# Production server
+gunicorn==21.2.0
